@@ -5,6 +5,12 @@ Kevin Mauricio Garces Hoyberg
 
 Sistema de alquiler de películas. 
 
+Comando para levantar tablas
+sequelize db:migrate:all
+
+Comando para poblar con datos las tablas
+sequelize db:seed:all
+
 router.post('/addmovie', MovieController.addMovie);
 
 router.get('/movies', MovieController.getMovies);
