@@ -5,15 +5,43 @@ Kevin Mauricio Garces Hoyberg
 Sistema de alquiler de películas. 
 
 router.post('/addmovie', MovieController.addMovie);
+
 router.get('/movies', MovieController.getMovies);
+http://localhost:3000/movies
+
 router.get("/movies/:title", MovieController.getMovieByTitle);
+http://localhost:3000/movies/Castle in the Sky
+
 router.post("/favourite/:code", MovieController.addFavourite);
+{
+    "MovieCode":"2baf70d1-42bb-4437-b551-e5fed5a87abe",
+    "UserId": "1",
+    "review": "Muy buena"
+}
+
 router.get("/favourites/:id", MovieController.allFavouritesMovies);
+http://localhost:3000/favourites/1
 
 router.post('/register', UserController.register);
+{
+    "id":"1",
+    "email":"kevin2@gmail.com",
+    "dni":"39274043",
+    "phone":"526441",
+    "password":"1234"
+}
+
 router.post('/login', UserController.login);
 router.post('/logout', UserController.logout);
 
 router.get("/rents", RentController.allRents);
+http://localhost:3000/rents
+
 router.put("/rent/:code", RentController.refundMovie);
+
+
 router.post("/rent/:code", RentController.rentMovie);
+{
+    "MovieCode":"12cfb892-aac0-4c5b-94af-521852e46d6a",
+    "id_user":"1"
+}

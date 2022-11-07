@@ -16,24 +16,6 @@ async function getFilmFromAPIByName(name) {
   }
 }
 
-const addMovie = (req, res, next) => {
-  try {
-    const movieAPI = getFilmFromAPIByName(req.body.title)
-    const newMovie = {
-      MovieCode: movieAPI.id,
-      title: movieAPI.title,
-      stock: 5,
-      rentals: 0,
-    }
-    Movie.create(newMovie)
-      .then(movie => res.status(201).send('Movie added'))
-  } catch (error) {
-    error = new Error()
-    error.status = 400;
-    res.status(400).send('Bad Request')
-    return next(error);
-  }
-}
 
 const getMovies = async (req, res) => {
   try {
@@ -152,7 +134,6 @@ const getMovieByTitle = async (req, res, next) => {
 module.exports = {
   getMovies,
   addFavourite,
-  addMovie,
   allFavouritesMovies,
   getMovieByTitle
 }
