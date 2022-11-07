@@ -1,6 +1,19 @@
 TP 3 SkillFactory NodeJS.
 Kevin Mauricio Garces Hoyberg
 
-npm i
-dependencias
-sequelize init
+
+Sistema de alquiler de películas. 
+
+router.post('/addmovie', MovieController.addMovie);
+router.get('/movies', MovieController.getMovies);
+router.get("/movies/:title", MovieController.getMovieByTitle);
+router.post("/favourite/:code", MovieController.addFavourite);
+router.get("/favourites/:id", MovieController.allFavouritesMovies);
+
+router.post('/register', UserController.register);
+router.post('/login', UserController.login);
+router.post('/logout', UserController.logout);
+
+router.get("/rents", RentController.allRents);
+router.put("/rent/:code", RentController.refundMovie);
+router.post("/rent/:code", RentController.rentMovie);
