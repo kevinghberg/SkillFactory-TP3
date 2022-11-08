@@ -48,10 +48,10 @@ describe("GET /movies", () => {
   });
 });
 
-describe("GET /movies/:id", () => {
-  it("Get Movie Details By ID", (done) => {
+describe("GET /movies/:title", () => {
+  it("Get Movie Details By Title", (done) => {
     request(app)
-      .get("/movies/58611129-2dbc-4a81-a72f-77ddfc1b1b49")
+      .get("/movies/Castle in the Sky")
       .expect(200)
       .then((response) => {
         assert.isNotEmpty(response._body); //no esta vacio
@@ -152,12 +152,30 @@ describe("POST /login", () => {
 describe('POST /favourite/:code', () => {
   beforeEach(done => {
     //Crear usuario y pelicula
+    const userExample = {
+      nombre: "Cristian",
+      email: "cristian@gmail.com",
+      password: "avalith",
+      phone: "555-555-555",
+      dni: "43123453",
+    };
+
+    const movie = {
+      id: "Cristian",
+      MovieCode: "cristian@gmail.com",
+      title: "avalith",
+      stock: "555-555-555",
+      rentals: "43123453",
+    };
   })
   it("Should return 201 and set movie as favourite for logged user with review", done => {
     // TO-DO
     // Check status
+
     // Check si se registro el cambio en la DB
+
     // Check si el registro en la DB es correcto
+    
   })
   it("Should return 201 and set movie as favourite for logged user without review", done => {
     // TO-DO
