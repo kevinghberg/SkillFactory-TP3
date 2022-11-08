@@ -11,6 +11,14 @@ sequelize db:migrate:all
 Comando para poblar con datos las tablas
 sequelize db:seed:all
 
+VARIABLES ENTORNO
+DATABASE_NAME
+DATABASE_USER
+DATABASE_PASSWORD
+DATABASE_TEST_NAME
+CADUCIDAD_TOKEN
+SEED_AUTENTICACION
+
 router.post('/addmovie', MovieController.addMovie);
 
 router.get('/movies', MovieController.getMovies);
