@@ -4,7 +4,7 @@ const request = require("supertest");
 const assert = require("chai").assert;
 const { app } = require("../app");
 const db = require("../models/index");
-const { User } = db;
+const { User, Movies } = db;
 const bcrypt = require("bcrypt");
 const { BaseError } = require("sequelize");
 
@@ -91,8 +91,8 @@ describe("POST /register", () => {
       .post("/register")
       .send(userExample)
       .expect(201)
-        .then(async (response) => {
-          assert.isTrue(response._body.ok)
+      .then(async (response) => {
+        assert.isTrue(response._body.ok)
         assert.isNotEmpty(response._body); //no esta vacio
         assert.isNotArray(response._body);
         assert.containsAllKeys(response._body.usuario, [
@@ -175,7 +175,7 @@ describe('POST /favourite/:code', () => {
     // Check si se registro el cambio en la DB
 
     // Check si el registro en la DB es correcto
-    
+
   })
   it("Should return 201 and set movie as favourite for logged user without review", done => {
     // TO-DO
@@ -193,43 +193,126 @@ describe('POST /favourite/:code', () => {
 
 describe('GET /favourites', () => {
   beforeEach(done => {
-    // Crear usuario, pelicula y agregar favoritos
+    request(app).get("/favourites").expect(200).end(done);
   })
   it("Should return 200 status and logged user favourite list", done => {
-    // TO-DO
-    // checkear que sea un array 
-    // checkear que tenga la cantidad correcta de elementos
-    // checkear las clave de cada elemento
-    // checkear que los elementos sean/sea el/los correctos
-  })
-  it("Should forbid access to non logged user", done => {
-    //TO-DO
-    //Chequear status
-    //Chequear mensaje de error
-  })
-})
+    request(app)
+      .get("/favourites")
+      .expect(200)
+      .then((response) => {
+        assert.isNotEmpty(response._body);
+        assert.isArray(response._body);
+        response._body.forEach((movieFav) =>
+          assert.containsAllKeys(movieFav, [
+            "MovieCode",
+            "UserId",
+            "review",
+            "MovieMovieCode",
+            "createdAt",
+            "updatedAt",
+          ])
+        );
+      })
+      .then(() => done(), done);
+  });
+});
+
 
 describe('POST /rent/:code', () => {
   beforeEach(done => {
     // Crear usuario, pelicula
-    })
-    it("Should return 201 and successfully rent a movie", done => {
-      //TO_DO
-      //Check status
-      //Chequear si se persistio correctamente la reserva
-      //Chequear que se quito una peli de stock
-      //Chequear que se sumo la renta a las veces alquiladas
-    })
-    it("Should not allow rent if there is no stock", done => {
-      //TO-DO
-    })
-    it("Should not allow rent if movie does not exist", done => {
-      //TO-DO
-    })
-    it("Should not allow non logged user to rent a movie", done => {
-      //TO-DO
-    })
+    const userExample = {
+      nombre: "Cristian",
+      email: "cristian@gmail.com",
+      password: "avalith",
+      phone: "555-555-555",
+      dni: "43123453"
+    }
+
+    const movieExample = {
+      code: "2baf70d1-42bb-4437-b551-e5fed5a87abe"
+    }
+
+    const movieWhithoutStock = {
+      code: "112c1e67-726f-40b1-ac17-6974127bb9b9"
+    }
   })
+  request(app)
+    .post('/login')
+    .send(userExample)
+    .expect(200)
+    .then((user) => {
+      request(app)
+        .post(`/rent/${movieExample.code}`)
+        .set({ Authorization: `Bearer ${user._body.token}` })
+        .expect(201)
+        .then(async (response) => {
+          const rent = await Movie.findAll()
+          const movie = await Movie.findOne({ where: { movieExample: code } })
+          assert.equal(response._body.msg, "Rented movie")
+          assert.operator(rent[0].id_rent, ">", 0)
+          assert.operator(movie.rentals, ">", 0)
+        })
+        .then(() => done(), done)
+    })
+})
+
+
+it.only("Should not allow rent if there is no stock", done => {
+
+  request(app)
+    .post('/login')
+    .send(userExample)
+    .expect(200)
+    .then(async (user) => {
+      const withoutStock = await Movies.update({
+        data: { stock: 0, rentals: 1 },
+        where: { code: movieWhithoutStock.code }
+      })
+      request(app)
+        .post(`/rent/${withoutStock.code}`)
+        .set({ Authorization: `Bearer ${user._body.token}` })
+        .expect(400)
+        .then(async (response) => {
+
+          assert.equal(response._body.error, "The movie has not stock")
+          assert.equal(withoutStock.stock, 0)
+
+        })
+        .then(() => done(), done);
+    })
+})
+
+
+
+it("Should not allow rent if movie does not exist", done => {
+  request(app)
+    .post('/login')
+    .send(userExample)
+    .expect(200)
+    .then((user) => {
+      request(app)
+        .post(`/rent/nonexistentcode`)
+        .set({ Authorization: `Bearer ${user._body.token}` })
+        .expect(404)
+        .then((response) => {
+          assert.equal(response._body.error, "Movie Not Found")
+        })
+        .then(() => done(), done);
+    })
+})
+
+
+it("Should not allow non logged user to rent a movie", done => {
+
+  request(app)
+    .post(`/rent/${movieExample.codeExample}`)
+    .expect(401)
+    .then((response) => {
+      assert.equal(response._body.error, "Authorization is not valid")
+    })
+    .then(() => done(), done);
+})
 
 describe("POST /return/:code", done => {
   beforeEach(done => {

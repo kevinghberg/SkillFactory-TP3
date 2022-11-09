@@ -7,7 +7,6 @@ const RentController = require('./controllers/RentController')
 const errorHandler = require("./middlewares/errorHandler");
 router.use(bodyParser.json())
 
-router.post('/addmovie', MovieController.addMovie);
 router.get('/movies', MovieController.getMovies);
 router.get("/movies/:title", MovieController.getMovieByTitle);
 router.post("/favourite/:code", MovieController.addFavourite);

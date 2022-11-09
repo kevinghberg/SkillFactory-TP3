@@ -3,6 +3,7 @@ const { User } = db;
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { json } = require('sequelize');
+const { transporter } = require('../config/mailer')
 
 const login = (req, res, next) => {
     try {
@@ -47,12 +48,12 @@ const login = (req, res, next) => {
             })
     } catch (error) {
         error = new Error("An error occurred when login.");
-      error.status = 400;
-      res.status(400).send("Error 400 when login");
-      return next(error);
+        error.status = 400;
+        res.status(400).send("Error 400 when login");
+        return next(error);
     }
 }
-const register = (req, res, next) => {
+const register = async (req, res, next) => {
     try {
         let { id, email, password, dni, phone } = req.body;
         let user = {
@@ -68,6 +69,12 @@ const register = (req, res, next) => {
                 user: userDB
             }).end();
         })
+        await transporter.sendMail({
+            from: '"Blockbuster 👻" <kkydota@gmail.com>', // sender address
+            to: user.email, // list of receivers
+            subject: "Hello ✔", // Subject line
+            text: "Account Created ✔", // plain text body     
+        });
     } catch (error) {
         error = new Error("An error occurred when register");
         error.status = 400;
@@ -75,8 +82,6 @@ const register = (req, res, next) => {
         return next(error);
     }
 }
-
-
 
 const logout = (req, res, next) => {
     try {
