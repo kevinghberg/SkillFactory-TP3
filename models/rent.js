@@ -47,23 +47,24 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       userRefund_date:
-      {type: DataTypes.DATE
+      {
+        type: DataTypes.DATE
       }
-,
-      MovieMovieCode:{
+      ,
+      MovieMovieCode: {
         type: DataTypes.STRING,
         allowNull: true
       },
-      RentIdRent:{
+      RentIdRent: {
         type: DataTypes.INTEGER,
         allowNull: true
       },
-      code:{
+      code: {
         type: DataTypes.INTEGER,
         allowNull: true
       },
     },
-  {
+    {
       sequelize,
       modelName: "Rent",
     }
